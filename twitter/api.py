@@ -120,7 +120,8 @@ class Api(object):
                  upload_url=None,
                  use_gzip_compression=False,
                  debugHTTP=False,
-                 timeout=None):
+                 timeout=None,
+                 proxies=None):
         """Instantiate a new twitter.Api object.
     
         Args:
@@ -156,6 +157,8 @@ class Api(object):
           timeout:
             Set timeout (in seconds) of the http/https requests. If None the
             requests lib default will be used.  Defaults to None. [Optional]
+          proxies:
+            A dictionary of proxies. [Optional]
         """
         self.SetCache(cache)
         self._urllib = urllib2
@@ -165,6 +168,7 @@ class Api(object):
         self._debugHTTP = debugHTTP
         self._shortlink_size = 19
         self._timeout = timeout
+        self._proxies = proxies
 
         self._InitializeRequestHeaders(request_headers)
         self._InitializeUserAgent()
@@ -3755,7 +3759,8 @@ class Api(object):
                         url,
                         files=data,
                         auth=self.__auth,
-                        timeout=self._timeout
+                        timeout=self._timeout,
+                        proxies=self._proxies,
                     )
                 except requests.RequestException as e:
                     raise TwitterError(str(e))
@@ -3765,7 +3770,8 @@ class Api(object):
                         url,
                         data=data,
                         auth=self.__auth,
-                        timeout=self._timeout
+                        timeout=self._timeout,
+                        proxies=self._proxies,
                     )
                 except requests.RequestException as e:
                     raise TwitterError(str(e))
@@ -3775,7 +3781,8 @@ class Api(object):
                 return requests.get(
                     url,
                     auth=self.__auth,
-                    timeout=self._timeout
+                    timeout=self._timeout,
+                    proxies=self._proxies,
                 )
             except requests.RequestException as e:
                 raise TwitterError(str(e))
@@ -3799,7 +3806,8 @@ class Api(object):
             try:
                 return requests.post(url, data=data, stream=True,
                                      auth=self.__auth,
-                                     timeout=self._timeout
+                                     timeout=self._timeout,
+                                     proxies=self._proxies,
                 )
             except requests.RequestException as e:
                 raise TwitterError(str(e))
@@ -3807,7 +3815,7 @@ class Api(object):
             url = self._BuildUrl(url, extra_params=data)
             try:
                 return requests.get(url, stream=True, auth=self.__auth,
-                                    timeout=self._timeout
+                                    timeout=self._timeout, proxies=self._proxies
                 )
             except requests.RequestException as e:
                 raise TwitterError(str(e))
